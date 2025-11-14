@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>E-Commerce Portal - MVP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --primary:#1f6feb; --bg:#0d1117; --card:#161b22; --text:#c9d1d9; --muted:#8b949e; --accent:#2ea043; }
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,Segoe UI,Arial;background:var(--bg);color:var(--text)}
+    header{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;background:#0b1220;border-bottom:1px solid #222}
+    nav a{color:var(--text);text-decoration:none;margin-right:14px;padding:6px 10px;border-radius:6px}
+    nav a.active, nav a:hover{background:var(--card)}
+    .user-actions a{margin-left:10px;color:var(--muted)}
+    main{max-width:1080px;margin:20px auto;padding:0 16px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+    .card{background:var(--card);border:1px solid #222;border-radius:10px;padding:14px}
+    .row{display:flex;gap:16px;flex-wrap:wrap}
+    .col{flex:1 1 320px}
+    h1,h2,h3{margin:10px 0}
+    button{background:var(--primary);color:white;border:none;border-radius:8px;padding:8px 12px;cursor:pointer}
+    button.secondary{background:#333;color:var(--text)}
+    button.success{background:var(--accent)}
+    input,select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #333;background:#0f141c;color:var(--text);margin:6px 0}
+    table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid #222;border-radius:8px;overflow:hidden}
+    th,td{padding:10px;border-bottom:1px solid #222;text-align:left}
+    .badge{display:inline-block;background:#23304a;color:#a9c3ff;padding:2px 8px;border-radius:999px;font-size:12px;margin-left:6px}
+    .muted{color:var(--muted)}
+    .error{color:#ff6b6b;margin-top:6px}
+    .success{color:#7bd389;margin-top:6px}
+    .hidden{display:none}
+    footer{padding:20px;color:var(--muted);text-align:center}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand"><strong>TechMart</strong> <span class="badge">MVP</span></div>
+    <nav>
+      <a href="#home" class="nav" data-page="home">Home</a>
+      <a href="#products" class="nav" data-page="products">Product items</a>
+      <a href="#about" class="nav" data-page="about">About Us</a>
+      <a href="#contact" class="nav" data-page="contact">Contact Us</a>
+      <a href="#orders" class="nav" data-page="orders">Orders</a>
+      <a href="#wishlist" class="nav" data-page="wishlist">Wishlist</a>
+      <a href="#reviews" class="nav" data-page="reviews">Reviews</a>
+      <a href="#support" class="nav" data-page="support">Customer Care</a>
+      <a href="#report" class="nav" data-page="report">Report Issue</a>
+    </nav>
+    <div class="user-actions">
+      <a href="#login" class="nav" data-page="login">Login</a>
+      <a href="#register" class="nav" data-page="register">Register</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Home -->
+    <section id="page-home" class="page">
+  <div class="hero" style="
+    background: linear-gradient(135deg, #1f6feb, #2ea043);
+    color: white; padding: 60px 20px; text-align: center; border-radius: 12px;">
+    <h1 style="font-size:2.5rem; margin-bottom:10px;">Welcome to <strong>E‑Store</strong></h1>
+    <p style="font-size:1.2rem; max-width:600px; margin:0 auto;">
+      Your one‑stop shop for gadgets, accessories, and more. Fast, simple, and built for you.
+    </p>
+    <button onclick="location.hash='#products'" style="
+      margin-top:20px; background:#0d1117; color:white; border:none; padding:12px 24px;
+      border-radius:8px; font-size:1rem; cursor:pointer;">
+      Browse Products
+    </button>
+  </div>
+
+  <h2 style="margin-top:40px;">Featured Products</h2>
+  <div class="grid" id="homeFeatured"></div>
+</section>
+
+    <!-- Products -->
+    <section id="page-products" class="page hidden">
+      <h2>Product items</h2>
+      <div class="grid" id="productGrid"></div>
+    </section>
+
+    <!-- About -->
+    <section id="page-about" class="page hidden">
+      <h2>About Us</h2>
+      <p>We’re a demo store built for coursework. Focus is on clean validation, simple UX, and clear data flows.</p>
+    </section>
+
+    <!-- Contact -->
+    <section id="page-contact" class="page hidden">
+      <h2>Contact Us</h2>
+      <div class="row">
+        <div class="col">
+          <p><strong>Email:</strong> support@estore.local</p>
+          <p><strong>Phone:</strong> +91-000-000-0000</p>
+          <p class="muted">For academic use only.</p>
+        </div>
+        <div class="col">
+          <h3>Quick message</h3>
+          <form id="contactForm">
+            <input id="cName" placeholder="Your name" required />
+            <input id="cEmail" type="email" placeholder="Your email" required />
+            <textarea id="cMsg" placeholder="Message" minlength="10" required></textarea>
+            <button type="submit">Send</button>
+            <div id="contactStatus" class="muted"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Orders -->
+    <section id="page-orders" class="page hidden">
+      <h2>Your orders</h2>
+      <table>
+        <thead><tr><th>Order ID</th><th>Date</th><th>Status</th><th>Total</th></tr></thead>
+        <tbody id="ordersBody"></tbody>
+      </table>
+      <p class="muted">Place an order from Products to populate.</p>
+    </section>
+
+    <!-- Wishlist -->
+    <section id="page-wishlist" class="page hidden">
+      <h2>Your wishlist</h2>
+      <div class="grid" id="wishlistGrid"></div>
+    </section>
+
+    <!-- Reviews -->
+    <section id="page-reviews" class="page hidden">
+      <h2>Comments & reviews</h2>
+      <div id="reviewsList"></div>
+      <h3 class="mt">Add a review</h3>
+      <form id="reviewForm">
+        <select id="revProduct" required></select>
+        <select id="revRating" required>
+          <option value="">Rating</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+        <textarea id="revText" placeholder="Your comment" minlength="5" required></textarea>
+        <button type="submit">Submit review</button>
+        <div id="revStatus" class="muted"></div>
+      </form>
+    </section>
+
+    <!-- Support -->
+    <section id="page-support" class="page hidden">
+      <h2>Customer care</h2>
+      <form id="supportForm">
+        <select id="supCategory" required>
+          <option value="">Select category</option>
+          <option>Order Issue</option>
+          <option>Payment</option>
+          <option>Product Quality</option>
+          <option>Returns</option>
+        </select>
+        <select id="supSeverity" required>
+          <option value="">Severity</option>
+          <option>Low</option><option>Medium</option><option>High</option>
+        </select>
+        <textarea id="supDesc" placeholder="Describe the issue" minlength="10" maxlength="500" required></textarea>
+        <button type="submit">Submit</button>
+        <div id="supStatus" class="muted"></div>
+      </form>
+      <h3>Tickets</h3>
+      <div id="ticketList"></div>
+    </section>
+
+    <!-- Report -->
+    <section id="page-report" class="page hidden">
+      <h2>Report an issue</h2>
+      <form id="reportForm">
+        <select id="repType" required>
+          <option value="">Issue type</option>
+          <option>Bug</option><option>Payment Failure</option><option>Wrong Item</option><option>Other</option>
+        </select>
+        <textarea id="repDesc" placeholder="What went wrong?" minlength="10" required></textarea>
+        <button type="submit">Report</button>
+        <div id="repStatus" class="muted"></div>
+      </form>
+      <h3>Reports</h3>
+      <div id="reportList"></div>
+    </section>
+
+    <!-- Login -->
+    <section id="page-login" class="page hidden">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <input id="loginEmail" type="email" placeholder="Email" required />
+        <input id="loginPass" type="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+        <div id="loginStatus" class="muted"></div>
+      </form>
+    </section>
+
+    <!-- Register -->
+    <section id="page-register" class="page hidden">
+      <h2>User registration</h2>
+      <form id="registerForm">
+        <input id="regName" placeholder="Full name" required />
+        <input id="regEmail" type="email" placeholder="Email" required />
+        <input id="regPass" type="password" placeholder="Password" required />
+        <input id="regConfirm" type="password" placeholder="Confirm password" required />
+        <input id="regPhone" placeholder="Phone (optional)" />
+        <textarea id="regAddr" placeholder="Address (optional)"></textarea>
+        <button type="submit">Create account</button>
+        <div id="regStatus" class="muted"></div>
+      </form>
+      <p class="muted">Password must be 8+ chars with upper, lower, number, and special character.</p>
+    </section>
+  </main>
+
+  <footer>
+  © TechMart demo. Data is stored in your browser (localStorage).
+</footer>
+
+
+  <script>
+    // --- Demo data & storage helpers ---
+    const store = {
+      get: (k, d=[]) => JSON.parse(localStorage.getItem(k) || JSON.stringify(d)),
+      set: (k, v) => localStorage.setItem(k, JSON.stringify(v))
+    };
+
+    // Seed products once
+    if (!localStorage.getItem('products')) {
+      store.set('products', [
+        {id:1,name:'Wireless Mouse',price:799,rating:4.3,stock:12,category:'Accessories'},
+        {id:2,name:'Mechanical Keyboard',price:3499,rating:4.6,stock:8,category:'Accessories'},
+        {id:3,name:'USB-C Charger 65W',price:1999,rating:4.2,stock:20,category:'Power'},
+        {id:4,name:'Noise Cancelling Headphones',price:4999,rating:4.1,stock:5,category:'Audio'}
+      ]);
+    }
+    const userKey = 'users', sessionKey = 'session', ordersKey = 'orders', wishKey = 'wishlist', reviewsKey='reviews', ticketsKey='tickets', reportsKey='reports';
+
+    // --- Router (hash-based) ---
+    const pages = [...document.querySelectorAll('.page')];
+    const navLinks = [...document.querySelectorAll('nav a.nav, .user-actions a.nav')];
+    function showPage(name){
+      pages.forEach(p => p.classList.toggle('hidden', p.id !== 'page-'+name));
+      navLinks.forEach(a => a.classList.toggle('active', a.dataset.page === name));
+      // load page-specific
+      if (name === 'products') renderProducts();
+      if (name === 'home') renderHome();
+      if (name === 'orders') renderOrders();
+      if (name === 'wishlist') renderWishlist();
+      if (name === 'reviews') renderReviews();
+      if (name === 'support') renderTickets();
+      if (name === 'report') renderReports();
+      if (name === 'reviews') fillReviewProductSelect();
+    }
+    window.addEventListener('hashchange', () => showPage(location.hash.slice(1) || 'home'));
+    showPage(location.hash.slice(1) || 'home');
+
+    // --- Auth & validation ---
+    const emailRx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const strongRx = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
+    document.getElementById('registerForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const name = regName.value.trim();
+      const email = regEmail.value.trim();
+      const pass = regPass.value;
+      const confirm = regConfirm.value;
+      const phone = regPhone.value.trim();
+      const addr = regAddr.value.trim();
+      const status = document.getElementById('regStatus');
+
+      if (name.length < 2 || name.length > 50 || /[^a-zA-Z\s]/.test(name)) return status.textContent = 'Name must be 2–50 letters.';
+      if (!emailRx.test(email)) return status.textContent = 'Enter a valid email.';
+      if (!strongRx.test(pass)) return status.textContent = 'Password must be strong (8+, upper/lower/number/special).';
+      if (pass !== confirm) return status.textContent = 'Passwords do not match.';
+      if (phone && /[^+\d]/.test(phone)) return status.textContent = 'Phone must contain digits and + only.';
+      if (addr && (addr.length < 10 || addr.length > 200)) return status.textContent = 'Address should be 10–200 characters.';
+
+      const users = store.get(userKey);
+      if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) return status.textContent = 'Email already registered.';
+      users.push({ id: Date.now(), name, email, pass, phone, addr });
+      store.set(userKey, users);
+      status.textContent = 'Registration successful. You can now login.';
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const email = loginEmail.value.trim();
+      const pass = loginPass.value;
+      const status = document.getElementById('loginStatus');
+      if (!emailRx.test(email)) return status.textContent = 'Enter a valid email.';
+      if (!pass) return status.textContent = 'Password is required.';
+      const users = store.get(userKey);
+      const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.pass === pass);
+      if (!user) return status.textContent = 'Invalid credentials.';
+      store.set(sessionKey, {userId: user.id, email: user.email, name: user.name});
+      status.textContent = 'Logged in. You can place orders and add reviews.';
+    });
+
+    // --- Products ---
+    function renderProducts(){
+      const products = store.get('products');
+      const grid = document.getElementById('productGrid');
+      grid.innerHTML = products.map(p=>`
+        <article class="card">
+          <h3>${p.name}</h3>
+          <p>₹${p.price} • <span class="muted">Rating: ${p.rating} ⭐</span></p>
+          <p class="muted">${p.category} • Stock: ${p.stock}</p>
+          <div class="row">
+            <button onclick="addToWishlist(${p.id})">Add to wishlist</button>
+            <button class="success" onclick="placeOrder(${p.id})">Buy now</button>
+            <button class="secondary" onclick="viewProductReviews(${p.id})">View reviews</button>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function addToWishlist(pid){
+      const session = store.get(sessionKey, null);
+      if (!session) return alert('Please login to use wishlist.');
+      const wl = store.get(wishKey);
+      if (!wl.find(w => w.userId === session.userId && w.productId === pid)) {
+        wl.push({ id: Date.now(), userId: session.userId, productId: pid });
+        store.set(wishKey, wl);
+      }
+      renderWishlist();
+      alert('Added to wishlist.');
+    }
+
+    function placeOrder(pid){
+      const session = store.get(sessionKey, null);
+      if (!session) return alert('Please login to place orders.');
+      const products = store.get('products');
+      const p = products.find(x => x.id === pid);
+      const orders = store.get(ordersKey);
+      orders.push({
+        id: 'ORD-' + Math.floor(Math.random()*1e6),
+        userId: session.userId,
+        items: [{productId: pid, qty: 1, price: p.price}],
+        status: 'Placed',
+        total: p.price,
+        createdAt: new Date().toISOString()
+      });
+      store.set(ordersKey, orders);
+      renderOrders();
+      alert('Order placed.');
+    }
+
+    // --- Home ---
+    function renderHome(){
+      const products = store.get('products').slice(0,3);
+      homeFeatured.innerHTML = products.map(p=>`
+        <article class="card">
+          <h3>${p.name}</h3>
+          <p>₹${p.price}</p>
+          <button onclick="placeOrder(${p.id})">Quick buy</button>
+        </article>
+      `).join('');
+    }
+
+    // --- Orders ---
+    function renderOrders(){
+      const session = store.get(sessionKey, null);
+      const body = document.getElementById('ordersBody');
+      if (!session) return body.innerHTML = `<tr><td colspan="4" class="muted">Login to view orders.</td></tr>`;
+      const orders = store.get(ordersKey).filter(o => o.userId === session.userId);
+      body.innerHTML = orders.length ? orders.map(o=>`
+        <tr>
+          <td>${o.id}</td>
+          <td>${new Date(o.createdAt).toLocaleDateString()}</td>
+          <td>${o.status}</td>
+          <td>₹${o.total}</td>
+        </tr>
+      `).join('') : `<tr><td colspan="4" class="muted">No orders yet.</td></tr>`;
+    }
+
+    // --- Wishlist ---
+    function renderWishlist(){
+      const session = store.get(sessionKey, null);
+      const grid = document.getElementById('wishlistGrid');
+      if (!session) return grid.innerHTML = `<p class="muted">Login to view wishlist.</p>`;
+      const wl = store.get(wishKey).filter(w => w.userId === session.userId);
+      const products = store.get('products');
+      grid.innerHTML = wl.length ? wl.map(w=>{
+        const p = products.find(x => x.id === w.productId);
+        return `
+          <article class="card">
+            <h3>${p.name}</h3>
+            <p>₹${p.price}</p>
+            <div class="row">
+              <button class="success" onclick="placeOrder(${p.id})">Move to order</button>
+              <button class="secondary" onclick="removeFromWishlist(${w.id})">Remove</button>
+            </div>
+          </article>
+        `;
+      }).join('') : `<p class="muted">Your wishlist is empty.</p>`;
+    }
+    function removeFromWishlist(wid){
+      const wl = store.get(wishKey).filter(w => w.id !== wid);
+      store.set(wishKey, wl);
+      renderWishlist();
+    }
+
+    // --- Reviews ---
+    function renderReviews(){
+      const list = document.getElementById('reviewsList');
+      const reviews = store.get(reviewsKey);
+      const products = store.get('products');
+      list.innerHTML = reviews.length ? reviews.map(r=>{
+        const p = products.find(x => x.id === r.productId);
+        return `<div class="card"><strong>${p?.name || 'Unknown'}</strong> • ${'⭐'.repeat(r.rating)}
+        <p class="muted">by ${r.userName || 'Anonymous'} on ${new Date(r.createdAt).toLocaleDateString()}</p>
+        <p>${r.text}</p></div>`;
+      }).join('') : `<p class="muted">No reviews yet. Add one below.</p>`;
+    }
+    function fillReviewProductSelect(){
+      const sel = document.getElementById('revProduct');
+      const products = store.get('products');
+      sel.innerHTML = `<option value="">Select product</option>` + products.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+    }
+    function viewProductReviews(pid){
+      location.hash = '#reviews';
+      renderReviews();
+      revProduct.value = String(pid);
+    }
+    document.getElementById('reviewForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const status = document.getElementById('revStatus');
+      const productId = Number(revProduct.value);
+      const rating = Number(revRating.value);
+      const text = revText.value.trim();
+      if (!productId) return status.textContent = 'Select a product.';
+      if (!rating) return status.textContent = 'Select a rating.';
+      if (text.length < 5) return status.textContent = 'Comment too short.';
+      const session = store.get(sessionKey, null);
+      const reviews = store.get(reviewsKey);
+      reviews.push({ id: Date.now(), productId, rating, text, userName: session?.name || 'Guest', createdAt:new Date().toISOString() });
+      store.set(reviewsKey, reviews);
+      status.textContent = 'Review added.';
+      renderReviews();
+      revText.value='';
+    });
+
+    // --- Support tickets ---
+    document.getElementById('supportForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const status = document.getElementById('supStatus');
+      const category = supCategory.value;
+      const severity = supSeverity.value;
+      const description = supDesc.value.trim();
+      if (!category || !severity || description.length < 10) return status.textContent = 'Please complete all fields with enough detail.';
+      const tickets = store.get(ticketsKey);
+      const session = store.get(sessionKey, null);
+      tickets.push({ id:'T-'+Math.floor(Math.random()*1e6), category, severity, description, status:'Open', userName: session?.name || 'Guest', createdAt:new Date().toISOString() });
+      store.set(ticketsKey, tickets);
+      status.textContent = 'Ticket submitted.';
+      supDesc.value='';
+      renderTickets();
+    });
+    function renderTickets(){
+      const box = document.getElementById('ticketList');
+      const tickets = store.get(ticketsKey);
+      box.innerHTML = tickets.length ? tickets.map(t=>`
+        <div class="card">
+          <strong>${t.category}</strong> <span class="badge">${t.severity}</span>
+          <p class="muted">by ${t.userName} • ${new Date(t.createdAt).toLocaleString()}</p>
+          <p>${t.description}</p>
+          <p>Status: ${t.status}</p>
+        </div>
+      `).join('') : `<p class="muted">No tickets yet.</p>`;
+    }
+
+    // --- Reports ---
+    document.getElementById('reportForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const status = document.getElementById('repStatus');
+      const type = repType.value;
+      const desc = repDesc.value.trim();
+      if (!type || desc.length < 10) return status.textContent = 'Please select type and describe the issue (10+ chars).';
+      const reports = store.get(reportsKey);
+      const session = store.get(sessionKey, null);
+      reports.push({ id:'R-'+Math.floor(Math.random()*1e6), type, desc, userName: session?.name || 'Guest', createdAt:new Date().toISOString() });
+      store.set(reportsKey, reports);
+      status.textContent = 'Report submitted.';
+      repDesc.value='';
+      renderReports();
+    });
+    function renderReports(){
+      const box = document.getElementById('reportList');
+      const reports = store.get(reportsKey);
+      box.innerHTML = reports.length ? reports.map(r=>`
+        <div class="card">
+          <strong>${r.type}</strong>
+          <p class="muted">by ${r.userName} • ${new Date(r.createdAt).toLocaleString()}</p>
+          <p>${r.desc}</p>
+        </div>
+      `).join('') : `<p class="muted">No reports yet.</p>`;
+    }
+
+    // --- Contact ---
+    document.getElementById('contactForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const status = document.getElementById('contactStatus');
+      const name = cName.value.trim();
+      const email = cEmail.value.trim();
+      const msg = cMsg.value.trim();
+      if (name.length < 2) return status.textContent = 'Please enter your name.';
+      if (!emailRx.test(email)) return status.textContent = 'Enter a valid email.';
+      if (msg.length < 10) return status.textContent = 'Message must be at least 10 characters.';
+      status.textContent = 'Message sent (demo).';
+      cMsg.value='';
+    });
+  </script>
+</body>
+</html>
